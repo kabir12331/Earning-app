@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Earn Money App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8920985530636956" crossorigin="anonymous"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .app-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 { color: #2196F3; font-size: 28px; margin-bottom: 20px; }
+        .points { font-size: 24px; color: #FF9800; font-weight: bold; margin: 10px 0; }
+        .balance { font-size: 32px; color: #4CAF50; font-weight: bold; margin-bottom: 30px; }
+        button {
+            width: 100%; height: 60px; margin: 10px 0;
+            border: none; border-radius: 15px; font-size: 18px;
+            font-weight: bold; cursor: pointer; transition: all 0.3s;
+        }
+        .task-btn { background: #FF5722; color: white; }
+        .video-btn { background: #2196F3; color: white; }
+        .refer-btn { background: #FF9800; color: white; }
+        .redeem-btn { background: #4CAF50; color: white; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .watching { background: #FFC107 !important; color: #333 !important; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>💰 EARN MONEY APP</h1>
+        <div class="points" id="points">Points: 0</div>
+        <div class="balance" id="balance">Balance: $0.00</div>
+
+        <button class="task-btn" onclick="openTasks()">🎯 DO TASKS ($1-5)</button>
+        <button class="video-btn" id="videoBtn" onclick="watchVideo()">🎥 WATCH VIDEO (+50 Points)</button>
+        <button class="refer-btn" onclick="shareRefer()">👥 REFER & EARN 100 Points</button>
+        <button class="redeem-btn" onclick="requestRedeem()">💳 WITHDRAW (Min $10)</button>
+    </div>
+
+    <script>
+        let points = 0;
+        let balance = 0.0;
+        let videoWatching = false;
+
+        function updateDisplay() {
+            document.getElementById('points').textContent = 'Points: ' + points;
+            document.getElementById('balance').textContent = 'Balance: $' + balance.toFixed(2);
+        }
+
+        function openTasks() {
+            const userId = 'user_' + Date.now();
+            const kiwiUrl = `https://www.kiwiwall.com/wall/jliur00oaf0sfdzgc0aee9myul1e9eg4/${userId}`;
+            window.open(kiwiUrl, '_blank');
+            alert('🎯 Kiwi Wall Tasks $1-5! Complete offers to earn!');
+        }
+
+        function watchVideo() {
+            if (videoWatching) return;
+
+            videoWatching = true;
+            const btn = document.getElementById('videoBtn');
+            btn.textContent = '🎥 Watching Video...';
+            btn.classList.add('watching');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                points += 50;
+                balance += 0.25;
+                updateDisplay();
+                alert('✅ +50 Points Earned! 🎉');
+
+                btn.textContent = '🎥 WATCH VIDEO (+50 Points)';
+                btn.classList.remove('watching');
+                btn.disabled = false;
+                videoWatching = false;
+            }, 30000);
+        }
+
+        function shareRefer() {
+            const message = `💰 Download Earn Money App & get 100 FREE Points!\n\n🎯 Tasks: $1-5 each\n🎥 Videos: 50 Points\n👥 Refer friends\n\nDownload: ${window.location.href}`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'Earn Money App', text: message });
+            } else {
+                navigator.clipboard.writeText(message);
+                alert('Link copied! Share with friends!');
+            }
+
+            points += 100;
+            updateDisplay();
+            alert('✅ +100 Refer Points! 🚀');
+        }
+
+        function requestRedeem() {
+            if (balance >= 10.0) {
+                const details = prompt('Enter your PayPal Email or UPI ID:');
+                if (details && details.trim() !== '') {
+                    alert('✅ Payment details saved!\n💰 Processing $' + balance.toFixed(2) + ' in 24 hours');
+                    balance = 0.0;
+                    updateDisplay();
+                } else {
+                    alert('Please enter valid payment details');
+                }
+            } else {
+                alert('❌ Minimum $10 required for withdrawal');
+            }
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
